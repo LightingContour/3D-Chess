@@ -13,6 +13,8 @@ public class ChessBoardManager : MonoBehaviour
     private GameObject m_BlackSideBoard;
     private GameObject m_WhiteSideBoard;
 
+    public GameObject[,] miniBoard = new GameObject[8, 8];
+
     // Start is called before the first frame update
     void Start()
     {
@@ -33,7 +35,6 @@ public class ChessBoardManager : MonoBehaviour
     {
         float offset = (float)-3.5;
         float multiple = 10;
-        GameObject[,] item = new GameObject[8, 8];
         for (int i = 0; i < 8; i++)
         {
             for (int j = 0; j < 8; j++)
@@ -50,7 +51,7 @@ public class ChessBoardManager : MonoBehaviour
                     board = Instantiate(m_WhiteSideBoard, pos, Quaternion.Euler(rot)) as GameObject;
                 }
                 board.GetComponent<Transform>().SetParent(m_Transform);
-                item[i, j] = board;
+                miniBoard[i, j] = board;
             }
         } 
     }
