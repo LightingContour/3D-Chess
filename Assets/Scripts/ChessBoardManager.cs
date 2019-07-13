@@ -35,6 +35,7 @@ public class ChessBoardManager : MonoBehaviour
     {
         float offset = (float)-3.5;
         float multiple = 10;
+        GameObject[,] item = new GameObject[8, 8];
         for (int i = 0; i < 8; i++)
         {
             for (int j = 0; j < 8; j++)
