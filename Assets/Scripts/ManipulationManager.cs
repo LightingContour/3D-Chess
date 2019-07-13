@@ -50,7 +50,7 @@ public class ManipulationManager : MonoBehaviour
             {
                 Debug.DrawLine(Camera.main.GetComponent<Transform>().position, 
                     hit.transform.position);
-                Debug.Log(Flag + "Notice:hitpoint=" + hit.point);
+                // Debug.Log(Flag + "Notice:hitpoint=" + hit.point);
                 Vector3 targetPoint;
                 targetPoint = hit.point;
 
@@ -61,7 +61,7 @@ public class ManipulationManager : MonoBehaviour
                         // 选中态，进行移动或取消
                         int i = ((Mathf.RoundToInt(targetPoint.z) + 40) / 10);
                         int j = ((Mathf.RoundToInt(targetPoint.x) + 40) / 10);
-                        Debug.Log(Flag + "get i =" + i + " j = " + j);
+                        // Debug.Log(Flag + "get i =" + i + " j = " + j);
                         if (selectedPos[0] == i && selectedPos[1] == j)
                         {
                             Debug.Log(Flag + "Select Same Position");
@@ -85,7 +85,7 @@ public class ManipulationManager : MonoBehaviour
                         selecting = true;
                         int i = ((Mathf.RoundToInt(targetPoint.z) + 40) / 10);
                         int j = ((Mathf.RoundToInt(targetPoint.x) + 40) / 10);
-                        Debug.Log(Flag + "get i =" + i + " j = " + j);
+                        // Debug.Log(Flag + "get i =" + i + " j = " + j);
                         selectedPos[0] = i;
                         selectedPos[1] = j;
                         selectedBoard = chessBoardManager.miniBoard[i, j];
