@@ -28,7 +28,6 @@ public class ManipulationManager : MonoBehaviour
     void Start()
     {
         chessBoardManager = GameObject.Find("BoardPlane").GetComponent<ChessBoardManager>();
-        selectedMaterial = Resources.Load<Material>("Materials/ChessBoard/Board_Selectiong_Standard");
         m_Transform = gameObject.GetComponent<Transform>();
     }
 
