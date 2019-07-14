@@ -19,6 +19,7 @@ public class ManipulationManager : MonoBehaviour
 
     private IEnumerator coroutine;
 
+    private bool catching; // 是否释放
     private bool selecting; // 是否选中
     private float offset = 40; // 棋盘偏移值
     private int[] selectedPos = new int[2]; // 移动格存储
@@ -54,7 +55,7 @@ public class ManipulationManager : MonoBehaviour
                 Vector3 targetPoint;
                 targetPoint = hit.point;
 
-                if(Mathf.Abs(targetPoint.x) <= offset && Mathf.Abs(targetPoint.z) <= offset)
+                if(Mathf.Abs(targetPoint.x) <= offset && Mathf.Abs(targetPoint.z) <= offset && catching == false)
                 {
                     if (selecting)
                     {
@@ -71,6 +72,7 @@ public class ManipulationManager : MonoBehaviour
                         else
                         {
                             Debug.Log(Flag + "Select Different Position");
+                            catching = true;
                             GameObject firstSelBoard = selectedBoard;
                             selectedBoard = chessBoardManager.miniBoard[i, j];
                             Material secondSelMaterial = selectedBoard.GetComponent<Renderer>().material;
@@ -104,5 +106,6 @@ public class ManipulationManager : MonoBehaviour
         yield return new WaitForSeconds(2.0f);
         firBoard.GetComponent<Renderer>().material = firMaterial;
         secBoard.GetComponent<Renderer>().material = secMaterial;
+        catching = false;
     }
 }
