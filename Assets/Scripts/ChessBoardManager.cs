@@ -21,8 +21,8 @@ public class ChessBoardManager : MonoBehaviour
         m_Transform = gameObject.GetComponent<Transform>();
 
         // Load Prefabs
-        m_BlackSideBoard = Resources.Load<GameObject>("Prefabs/BlackSideBoard");
-        m_WhiteSideBoard = Resources.Load<GameObject>("Prefabs/WhiteSideBoard");
+        m_BlackSideBoard = Resources.Load<GameObject>("Prefabs/MiniBoard/BlackSideBoard_TinyChess");
+        m_WhiteSideBoard = Resources.Load<GameObject>("Prefabs/MiniBoard/WhiteSideBoard_TinyChess");
 
         CreatBasicBoard();
     }
@@ -44,7 +44,7 @@ public class ChessBoardManager : MonoBehaviour
                 Vector3 rot = new Vector3(0, 0, 0);
                 GameObject board;
 
-                if ((i + j)%2 != 0)
+                if ((i + j)%2 == 0)
                 {
                     board = Instantiate(m_BlackSideBoard, pos, Quaternion.Euler(rot)) as GameObject;
                 } else
