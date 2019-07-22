@@ -43,10 +43,10 @@ public class ChessBoardManager : MonoBehaviour
 
     public GameObject[,] miniBoard = new GameObject[8, 8];
     public Transform m_ChessTransform;
-    public GameObject[,] ChessIcon = new GameObject[2, 16];
-    private GameObject[,] ChessPre = new GameObject[2, 16];
+    private GameObject[,] ChessIcon = new GameObject[2, 16];
+    public GameObject[,] ChessPre = new GameObject[2, 16];
 
-    // Start is called before the first frame update
+    // Start is called before the first frame update3
     void Start()
     {
         m_Transform = gameObject.GetComponent<Transform>();
