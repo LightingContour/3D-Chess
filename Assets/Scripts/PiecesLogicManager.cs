@@ -118,11 +118,11 @@ public class PiecesLogicManager : MonoBehaviour
         }
         else if (j == 1 || j == 6)
         {
-            type[1] = 4;
+            type[1] = 5;
         }
         else if (j == 2 || j == 5)
         {
-            type[1] = 5;
+            type[1] = 4;
         }
         else {
             type[1] = 6;// 传参错误，j反6
@@ -141,9 +141,10 @@ public class PiecesLogicManager : MonoBehaviour
     {
         nextCouldStep = new List<int[]>();
         nextCouldTimes = 0;
+        Debug.Log(Flag + "chessClass[1]:" + chessClass[1]);
         if (chessClass[1] == 0)
         {
-            switch (chessClass[0])
+            switch (chessClass[0]) // 兵
             {
                 case 0:
                     // 默认情况可走前、左、右
@@ -214,7 +215,6 @@ public class PiecesLogicManager : MonoBehaviour
                             }
                         }
                     }
-                    Debug.Log(Flag + "nextCouldTimes:" + nextCouldTimes);
                     break;
                 case 1:
                     // 默认可走后、左、右
@@ -287,261 +287,364 @@ public class PiecesLogicManager : MonoBehaviour
                             }
                         }
                     }
-                    Debug.Log(Flag + "nextCouldTimes:" + nextCouldTimes);
                     break;
             }
         }
-        else if (chessClass[1] == 1)
+        else if (chessClass[1] == 1) // 王,暂不用判断哪一边
         {
+            if (chessPos[0] - 1 >= 0) // 左
+            {
+                if (!ChessExistCheck(chessPos[0] - 1, chessPos[1]))
+                {
+                    nextCouldStep.Add(new int[2] { chessPos[0] - 1, chessPos[1]});
+                    nextCouldTimes++;
+                }
+            }
+            if (chessPos[0] + 1 <= 7) // 右
+            {
+                if (!ChessExistCheck(chessPos[0] + 1, chessPos[1]))
+                {
+                    nextCouldStep.Add(new int[2] { chessPos[0] + 1, chessPos[1]});
+                    nextCouldTimes++;
+                }
+            }
+            if (chessPos[1] - 1 >= 0) // 下 
+            {
+                if (!ChessExistCheck(chessPos[0], chessPos[1] - 1))
+                {
+                    nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] - 1 });
+                    nextCouldTimes++;
+                }
+            }
+            if (chessPos[1] + 1 <= 7) // 上
+            {
+                if (!ChessExistCheck(chessPos[0], chessPos[1] + 1))
+                {
+                    nextCouldStep.Add(new int[2] { chessPos[0] + 1, chessPos[1] + 1 });
+                    nextCouldTimes++;
+                }
+            }
             switch (chessClass[0])
             {
                 case 0:
-                    if (chessPos[0] != 0 || chessPos[0] != 7)
+                    break;
+                case 1:
+                    break;
+            }
+        }
+        else if (chessClass[1] == 2) // 后,暂不用确定属于哪一边
+        {
+            if (chessPos[0] != 0)
+            {
+                if (chessPos[1] != 7) // 左上
+                {
+                    for (int i = 0; chessPos[0] - i >= 0 && chessPos[1] + i <= 7; i++)
                     {
-                        if (!ChessExistCheck(chessPos[0] + 1, chessPos[1]))
+                        if (!ChessExistCheck(chessPos[0] - i, chessPos[1] + i))
                         {
-                            nextCouldStep.Add(new int[2] { chessPos[0] + 1, chessPos[1] });
+                            nextCouldStep.Add(new int[2] { chessPos[0] - i, chessPos[1] + i });
                             nextCouldTimes++;
                         }
-                        if (!ChessExistCheck(chessPos[0] - 1, chessPos[1]))
+                        break;
+                    }
+                }
+                if (chessPos[1] != 0) // 左下
+                {
+                    for (int i = 0; chessPos[0] - i >= 0 && chessPos[1] - i >= 0; i++)
+                    {
+                        if (!ChessExistCheck(chessPos[0] - i, chessPos[1] - i))
                         {
-                            nextCouldStep.Add(new int[2] { chessPos[0] - 1, chessPos[1] });
+                            nextCouldStep.Add(new int[2] { chessPos[0] - i, chessPos[1] - i });
                             nextCouldTimes++;
                         }
-                        if (chessPos[1] != 0 && chessPos[1] != 7)
-                        {
-                            if (!ChessExistCheck(chessPos[0], chessPos[1] - 1))
-                            {
-                                nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] - 1 });
-                                nextCouldTimes++;
-                            }
-                            if (!ChessExistCheck(chessPos[0], chessPos[1] + 1))
-                            {
-                                nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] + 1 });
-                                nextCouldTimes++;
-                            }
-                        }
-                        else if (chessPos[1] == 0)
-                        {
-                            if (!ChessExistCheck(chessPos[0], chessPos[1] + 1))
-                            {
-                                nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] + 1 });
-                                nextCouldTimes++;
-                            }
-                        }
-                        else
-                        {
-                            if (!ChessExistCheck(chessPos[0], chessPos[1] - 1))
-                            {
-                                nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] - 1 });
-                                nextCouldTimes++;
-                            }
-                        }
+                        break;
                     }
-                    else
+                }
+            }
+            if (chessPos[0] != 7)
+            {
+                if (chessPos[1] != 7) // 右上
+                {
+                    for (int i = 0; chessPos[0] + i <= 7 && chessPos[1] + i <= 7; i++)
                     {
-                        if (chessPos[0] == 0)
+                        if (!ChessExistCheck(chessPos[0] + i, chessPos[1] + i))
                         {
-                            if (!ChessExistCheck(chessPos[0] + 1, chessPos[1]))
-                            {
-                                nextCouldStep.Add(new int[2] { chessPos[0] + 1, chessPos[1] });
-                                nextCouldTimes++;
-                            }
-                            if (chessPos[1] != 0 && chessPos[1] != 7)
-                            {
-                                if (!ChessExistCheck(chessPos[0], chessPos[1] - 1))
-                                {
-                                    nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] - 1 });
-                                    nextCouldTimes++;
-                                }
-                                if (!ChessExistCheck(chessPos[0], chessPos[1] + 1))
-                                {
-                                    nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] + 1 });
-                                    nextCouldTimes++;
-                                }
-                            }
-                            else if (chessPos[1] == 0)
-                            {
-                                if (!ChessExistCheck(chessPos[0], chessPos[1] + 1))
-                                {
-                                    nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] + 1 });
-                                    nextCouldTimes++;
-                                }
-                            }
-                            else
-                            {
-                                if (!ChessExistCheck(chessPos[0], chessPos[1] - 1))
-                                {
-                                    nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] - 1 });
-                                    nextCouldTimes++;
-                                }
-                            }
-                        }
-                        else {
-                            if (!ChessExistCheck(chessPos[0] - 1, chessPos[1]))
-                            {
-                                nextCouldStep.Add(new int[2] { chessPos[0] - 1, chessPos[1] });
-                                nextCouldTimes++;
-                            }
-                            if (chessPos[1] != 0 && chessPos[1] != 7)
-                            {
-                                if (!ChessExistCheck(chessPos[0], chessPos[1] - 1))
-                                {
-                                    nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] - 1 });
-                                    nextCouldTimes++;
-                                }
-                                if (!ChessExistCheck(chessPos[0], chessPos[1] + 1))
-                                {
-                                    nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] + 1 });
-                                    nextCouldTimes++;
-                                }
-                            }
-                            else if (chessPos[1] == 0)
-                            {
-                                if (!ChessExistCheck(chessPos[0], chessPos[1] + 1))
-                                {
-                                    nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] + 1 });
-                                    nextCouldTimes++;
-                                }
-                            }
-                            else
-                            {
-                                if (!ChessExistCheck(chessPos[0], chessPos[1] - 1))
-                                {
-                                    nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] - 1 });
-                                    nextCouldTimes++;
-                                }
-                            }
-                        }
-                    }
-                    Debug.Log(Flag + "nextCouldTimes:" + nextCouldTimes);
-                    break;
-                case 1:
-                    if (chessPos[0] != 0 || chessPos[0] != 7)
-                    {
-                        if (!ChessExistCheck(chessPos[0] + 1, chessPos[1]))
-                        {
-                            nextCouldStep.Add(new int[2] { chessPos[0] + 1, chessPos[1] });
+                            nextCouldStep.Add(new int[2] { chessPos[0] + i, chessPos[1] + i });
                             nextCouldTimes++;
                         }
-                        if (!ChessExistCheck(chessPos[0] - 1, chessPos[1]))
+                        break;
+                    }
+                }
+                if (chessPos[1] != 0) // 右下
+                {
+                    for (int i = 0; chessPos[0] + i <= 7 && chessPos[1] - i >= 0; i++)
+                    {
+                        if (!ChessExistCheck(chessPos[0] + i, chessPos[1] - i))
                         {
-                            nextCouldStep.Add(new int[2] { chessPos[0] - 1, chessPos[1] });
+                            nextCouldStep.Add(new int[2] { chessPos[0] + i, chessPos[1] - i });
                             nextCouldTimes++;
                         }
-                        if (chessPos[1] != 0 && chessPos[1] != 7)
-                        {
-                            if (!ChessExistCheck(chessPos[0], chessPos[1] - 1))
-                            {
-                                nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] - 1 });
-                                nextCouldTimes++;
-                            }
-                            if (!ChessExistCheck(chessPos[0], chessPos[1] + 1))
-                            {
-                                nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] + 1 });
-                                nextCouldTimes++;
-                            }
-                        }
-                        else if (chessPos[1] == 0)
-                        {
-                            if (!ChessExistCheck(chessPos[0], chessPos[1] + 1))
-                            {
-                                nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] + 1 });
-                                nextCouldTimes++;
-                            }
-                        }
-                        else
-                        {
-                            if (!ChessExistCheck(chessPos[0], chessPos[1] - 1))
-                            {
-                                nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] - 1 });
-                                nextCouldTimes++;
-                            }
-                        }
+                        break;
                     }
-                    else
+                }
+            }
+            if (chessPos[0] != 0) // 左
+            {
+                for (int i = 0; chessPos[0] - i >= 0; i++)
+                {
+                    if (!ChessExistCheck(chessPos[0] - i, chessPos[1]))
                     {
-                        if (chessPos[0] == 0)
+                        nextCouldStep.Add(new int[2] { chessPos[0] - i, chessPos[1] });
+                        nextCouldTimes++;
+                    }
+                    break;
+                }
+            }
+            if (chessPos[0] != 7) // 右
+            {
+                for (int i = 0; chessPos[0] + i <= 7; i++)
+                {
+                    if (!ChessExistCheck(chessPos[0] + i, chessPos[1]))
+                    {
+                        nextCouldStep.Add(new int[2] { chessPos[0] + i, chessPos[1] });
+                        nextCouldTimes++;
+                    }
+                    break;
+                }
+            }
+            if (chessPos[1] != 0) // 下
+            {
+                for (int i = 0; chessPos[1] - i >= 0; i++)
+                {
+                    if (!ChessExistCheck(chessPos[0] - i, chessPos[1]))
+                    {
+                        nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] - i });
+                        nextCouldTimes++;
+                    }
+                    break;
+                }
+            }
+            if (chessPos[0] != 7) // 上
+            {
+                for (int i = 0; chessPos[1] + i <= 7; i++)
+                {
+                    if (!ChessExistCheck(chessPos[0] + i, chessPos[1]))
+                    {
+                        nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] + i });
+                        nextCouldTimes++;
+                    }
+                    break;
+                }
+            }
+            switch (chessClass[0])
+            {
+                case 0:
+                    break;
+                case 1:
+                    break;
+            }
+        }
+        else if (chessClass[1] == 3) // 车
+        {
+            if (chessPos[0] != 0) // 左
+            {
+                for (int i = 0; chessPos[0] - i >= 0; i++)
+                {
+                    if (!ChessExistCheck(chessPos[0] - i, chessPos[1]))
+                    {
+                        nextCouldStep.Add(new int[2] { chessPos[0] - i, chessPos[1] });
+                        nextCouldTimes++;
+                    }
+                    break;
+                }
+            }
+            if (chessPos[0] != 7) // 右
+            {
+                for (int i = 0; chessPos[0] + i <= 7; i++)
+                {
+                    if (!ChessExistCheck(chessPos[0] + i, chessPos[1]))
+                    {
+                        nextCouldStep.Add(new int[2] { chessPos[0] + i, chessPos[1] });
+                        nextCouldTimes++;
+                    }
+                    break;
+                }
+            }
+            if (chessPos[1] != 0) // 上
+            {
+                for (int i = 0; chessPos[1] - i >= 0; i++)
+                {
+                    if (!ChessExistCheck(chessPos[0] - i, chessPos[1]))
+                    {
+                        nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] - i });
+                        nextCouldTimes++;
+                    }
+                    break;
+                }
+            }
+            if (chessPos[0] != 7) // 下
+            {
+                for (int i = 0; chessPos[1] + i <= 7; i++)
+                {
+                    if (!ChessExistCheck(chessPos[0] + i, chessPos[1]))
+                    {
+                        nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] + i });
+                        nextCouldTimes++;
+                    }
+                    break;
+                }
+            }
+
+            switch (chessClass[0])
+            {
+                case 0:
+                    break;
+                case 1:
+                    break;
+            }
+        }
+        else if (chessClass[1] == 4) // 象
+        {
+            if (chessPos[0] != 0)
+            {
+                if (chessPos[1] != 7) // 左上
+                {
+                    for (int i = 0; chessPos[0] - i >= 0 && chessPos[1] + i <= 7; i++)
+                    {
+                        if (!ChessExistCheck(chessPos[0] - i, chessPos[1] + i))
                         {
-                            if (!ChessExistCheck(chessPos[0] + 1, chessPos[1]))
-                            {
-                                nextCouldStep.Add(new int[2] { chessPos[0] + 1, chessPos[1] });
-                                nextCouldTimes++;
-                            }
-                            if (chessPos[1] != 0 && chessPos[1] != 7)
-                            {
-                                if (!ChessExistCheck(chessPos[0], chessPos[1] - 1))
-                                {
-                                    nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] - 1 });
-                                    nextCouldTimes++;
-                                }
-                                if (!ChessExistCheck(chessPos[0], chessPos[1] + 1))
-                                {
-                                    nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] + 1 });
-                                    nextCouldTimes++;
-                                }
-                            }
-                            else if (chessPos[1] == 0)
-                            {
-                                if (!ChessExistCheck(chessPos[0], chessPos[1] + 1))
-                                {
-                                    nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] + 1 });
-                                    nextCouldTimes++;
-                                }
-                            }
-                            else
-                            {
-                                if (!ChessExistCheck(chessPos[0], chessPos[1] - 1))
-                                {
-                                    nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] - 1 });
-                                    nextCouldTimes++;
-                                }
-                            }
+                            nextCouldStep.Add(new int[2] { chessPos[0] - i, chessPos[1] + i });
+                            nextCouldTimes++;
                         }
-                        else
+                        break;
+                    }
+                }
+                if (chessPos[1] != 0) // 左下
+                {
+                    for (int i = 0; chessPos[0] - i >= 0 && chessPos[1] - i >= 0; i++)
+                    {
+                        if (!ChessExistCheck(chessPos[0] - i, chessPos[1] - i))
                         {
-                            if (!ChessExistCheck(chessPos[0] - 1, chessPos[1]))
-                            {
-                                nextCouldStep.Add(new int[2] { chessPos[0] - 1, chessPos[1] });
-                                nextCouldTimes++;
-                            }
-                            if (chessPos[1] != 0 && chessPos[1] != 7)
-                            {
-                                if (!ChessExistCheck(chessPos[0], chessPos[1] - 1))
-                                {
-                                    nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] - 1 });
-                                    nextCouldTimes++;
-                                }
-                                if (!ChessExistCheck(chessPos[0], chessPos[1] + 1))
-                                {
-                                    nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] + 1 });
-                                    nextCouldTimes++;
-                                }
-                            }
-                            else if (chessPos[1] == 0)
-                            {
-                                if (!ChessExistCheck(chessPos[0], chessPos[1] + 1))
-                                {
-                                    nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] + 1 });
-                                    nextCouldTimes++;
-                                }
-                            }
-                            else
-                            {
-                                if (!ChessExistCheck(chessPos[0], chessPos[1] - 1))
-                                {
-                                    nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] - 1 });
-                                    nextCouldTimes++;
-                                }
-                            }
+                            nextCouldStep.Add(new int[2] { chessPos[0] - i, chessPos[1] - i });
+                            nextCouldTimes++;
+                        }
+                        break;
+                    }
+                }
+            }
+            if (chessPos[0] != 7)
+            {
+                if (chessPos[1] != 7) // 右上
+                {
+                    for (int i = 0; chessPos[0] + i <= 7 && chessPos[1] + i <= 7; i++)
+                    {
+                        if (!ChessExistCheck(chessPos[0] + i, chessPos[1] + i))
+                        {
+                            nextCouldStep.Add(new int[2] { chessPos[0] + i, chessPos[1] + i });
+                            nextCouldTimes++;
+                        }
+                        break;
+                    }
+                }
+                if (chessPos[1] != 0) // 右下
+                {
+                    for (int i = 0; chessPos[0] + i <= 7 && chessPos[1] - i >= 0; i++)
+                    {
+                        if (!ChessExistCheck(chessPos[0] + i, chessPos[1] - i))
+                        {
+                            nextCouldStep.Add(new int[2] { chessPos[0] + i, chessPos[1] - i });
+                            nextCouldTimes++;
+                        }
+                        break;
+                    }
+                }
+            }
+            switch (chessClass[0])
+            {
+                case 0:
+                    break;
+                case 1:
+                    break;
+            }
+        }
+        else if (chessClass[1] == 5) // 马
+        {
+            if (chessPos[0] - 1 >= 0)
+            {
+                if (chessPos[1] - 2 >= 0)
+                {
+                    if (!ChessExistCheck(chessPos[0] - 1, chessPos[1] - 2))
+                    {
+                        nextCouldStep.Add(new int[2] { chessPos[0] - 1, chessPos[1] - 2 });
+                        nextCouldTimes++;
+                    }
+                }
+                if (chessPos[1] + 2 <= 7)
+                {
+                    if (!ChessExistCheck(chessPos[0] - 1, chessPos[1] + 2))
+                    {
+                        nextCouldStep.Add(new int[2] { chessPos[0] - 1, chessPos[1] + 2 });
+                        nextCouldTimes++;
+                    }
+                }
+                if (chessPos[0] - 2 >= 0)
+                {
+                    if (chessPos[1] - 1 >= 0)
+                    {
+                        if (!ChessExistCheck(chessPos[0] - 2, chessPos[1] - 1))
+                        {
+                            nextCouldStep.Add(new int[2] { chessPos[0] - 2, chessPos[1] - 1 });
+                            nextCouldTimes++;
                         }
                     }
-                    Debug.Log(Flag + "nextCouldTimes:" + nextCouldTimes);
-                    break;
+                    if (chessPos[1] + 1 <= 7)
+                    {
+                        if (!ChessExistCheck(chessPos[0] - 2, chessPos[1] + 1))
+                        {
+                            nextCouldStep.Add(new int[2] { chessPos[0] - 2, chessPos[1] + 1 });
+                            nextCouldTimes++;
+                        }
+                    }
+                }
             }
-        }
-        else if (chessClass[1] == 2)
-        {
+            if (chessPos[0] + 1 <= 7)
+            {
+                if (chessPos[1] - 2 >= 0)
+                {
+                    if (!ChessExistCheck(chessPos[0] + 1, chessPos[1] - 2))
+                    {
+                        nextCouldStep.Add(new int[2] { chessPos[0] + 1, chessPos[1] - 2 });
+                        nextCouldTimes++;
+                    }
+                }
+                if (chessPos[1] + 2 <= 7)
+                {
+                    if (!ChessExistCheck(chessPos[0] + 1, chessPos[1] + 2))
+                    {
+                        nextCouldStep.Add(new int[2] { chessPos[0] + 1, chessPos[1] + 2 });
+                        nextCouldTimes++;
+                    }
+                }
+                if (chessPos[0] + 2 <= 7)
+                {
+                    if (chessPos[1] - 1 >= 0)
+                    {
+                        if (!ChessExistCheck(chessPos[0] + 2, chessPos[1] - 1))
+                        {
+                            nextCouldStep.Add(new int[2] { chessPos[0] + 2, chessPos[1] - 1 });
+                            nextCouldTimes++;
+                        }
+                    }
+                    if (chessPos[1] + 1 <= 7)
+                    {
+                        if (!ChessExistCheck(chessPos[0] + 2, chessPos[1] + 1))
+                        {
+                            nextCouldStep.Add(new int[2] { chessPos[0] + 2, chessPos[1] + 1 });
+                            nextCouldTimes++;
+                        }
+                    }
+                }
+            }
             switch (chessClass[0])
             {
                 case 0:
@@ -550,36 +653,7 @@ public class PiecesLogicManager : MonoBehaviour
                     break;
             }
         }
-        else if (chessClass[1] == 3)
-        {
-            switch (chessClass[0])
-            {
-                case 0:
-                    break;
-                case 1:
-                    break;
-            }
-        }
-        else if (chessClass[1] == 4)
-        {
-            switch (chessClass[0])
-            {
-                case 0:
-                    break;
-                case 1:
-                    break;
-            }
-        }
-        else if (chessClass[1] == 5)
-        {
-            switch (chessClass[0])
-            {
-                case 0:
-                    break;
-                case 1:
-                    break;
-            }
-        }
+        Debug.Log(Flag + "nextCouldTimes:" + nextCouldTimes);
     }
 
     // Update is called once per frame

@@ -112,7 +112,7 @@ public class ManipulationManager : MonoBehaviour
                             selectedPos[1] = j;
                             selectedBoard = chessBoardManager.miniBoard[selectedPos[0], selectedPos[1]];
                             selectedBoard.GetComponent<Renderer>().material = selectedMaterial;
-                            Debug.Log(Flag + "Select Success");
+                            Debug.Log(Flag + "Select Success, Selected Pos=" + selectedPos[0] + ", " + selectedPos[1]);
                             piecesLogicManager.NextStepGuider(chessClass, selectedPos, out int nextCouldTimes, out List<int[]> nextCouldStep);
                             if (nextCouldTimes > 0)
                             {
