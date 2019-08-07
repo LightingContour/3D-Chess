@@ -46,6 +46,8 @@ public class ChessBoardManager : MonoBehaviour
     private GameObject[,] ChessIcon = new GameObject[2, 16];
     public GameObject[,] ChessPre = new GameObject[2, 16];
 
+    private Vector3 prfOffset = new Vector3(0, -0.5f, 0);
+
     // Start is called before the first frame update3
     void Start()
     {
@@ -126,7 +128,6 @@ public class ChessBoardManager : MonoBehaviour
     void InitChess()
     {
         Vector3 posOffset = new Vector3(0, 1.5f, 0);
-        Vector3 prfOffset = new Vector3(0, -0.5f, 0);
         Vector3 rot = new Vector3(0, 180, 0);
         ChessIcon[0, 0] = Instantiate(m_IconWhiteRook, miniBoard[0, 0].GetComponent<Transform>().position + posOffset, Quaternion.Euler(rot)) as GameObject;
         ChessIcon[0, 1] = Instantiate(m_IconWhiteHorse, miniBoard[0, 1].GetComponent<Transform>().position + posOffset, Quaternion.Euler(rot)) as GameObject;
@@ -204,6 +205,54 @@ public class ChessBoardManager : MonoBehaviour
                 ChessIcon[i, j].GetComponent<Transform>().SetParent(ChessPre[i, j].GetComponent<Transform>());
             }
         }
+    }
+
+    /// <summary>
+    /// 返回当前Board的位置
+    /// </summary>
+    /// <param name="chessBoard">需要查询的Board</param>
+    /// <returns>返回i,j值</returns>
+    public int[] GetBoardPos(GameObject chessBoard)
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                if (chessBoard == miniBoard[i, j])
+                {
+                    return new int[2] { i, j };
+                }
+            }
+        }
+        // 未检索到，返回异常值8,8
+        return new int[2] { 8, 8 };
+    }
+
+    /// <summary>
+    /// 获取Board，并重置其颜色
+    /// </summary>
+    /// <param name="chessBoard"></param>
+    public void ResetBoard(GameObject chessBoard)
+    {
+        int[] pos = GetBoardPos(chessBoard);
+        if ((pos[0] + pos[1]) % 2 == 0)
+        {
+            chessBoard.GetComponent<Renderer>().material = m_BlackSideBoard.GetComponent<MeshRenderer>().sharedMaterial;
+        }
+        else
+        {
+            chessBoard.GetComponent<Renderer>().material = m_WhiteSideBoard.GetComponent<MeshRenderer>().sharedMaterial;
+        }
+    }
+
+    /// <summary>
+    /// 通过Board，返回需要转换到该位置的棋子的位置
+    /// </summary>
+    /// <param name="chessBoard"></param>
+    /// <returns>需要的棋子position</returns>
+    public Vector3 GetChessVector(GameObject chessBoard)
+    {
+        return chessBoard.GetComponent<Transform>().position + prfOffset;
     }
 
     // Update is called once per frame

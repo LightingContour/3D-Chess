@@ -84,6 +84,19 @@ public class PiecesLogicManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 移动棋子
+    /// </summary>
+    /// <param name="i">Board的i</param>
+    /// <param name="j">Board的j</param>
+    /// <param name="k">前往的Board的i</param>
+    /// <param name="l">前往的Board的j</param>
+    public void ChessMove(int i, int j, int k, int l)
+    {
+        ChessExistCheck(i, j, out int chessI, out int chessJ);
+        chessBoardManager.ChessPre[chessI, chessJ].GetComponent<Transform>().position = chessBoardManager.GetChessVector(chessBoardManager.miniBoard[k, l]);
+    }
+
+    /// <summary>
     /// 判断棋子是哪个类型
     /// </summary>
     /// <param name="i">chessI</param>
