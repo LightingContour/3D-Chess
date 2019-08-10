@@ -94,7 +94,6 @@ public class ManipulationManager : MonoBehaviour
                             catching = true;
                             GameObject firstSelBoard = selectedBoard;
                             selectedBoard = chessBoardManager.miniBoard[i, j];
-                            Material secondSelMaterial = selectedBoard.GetComponent<Renderer>().material;
                             selectedBoard.GetComponent<Renderer>().material = selectedMaterial;
                             if (isShow)
                             {
@@ -103,7 +102,7 @@ public class ManipulationManager : MonoBehaviour
                                 int[] secBoardPos = chessBoardManager.GetBoardPos(selectedBoard);
                                 piecesLogicManager.ChessMove(firBoardPos[0], firBoardPos[1], secBoardPos[0], secBoardPos[1]);
                             }
-                            AfterMoving(firstSelBoard, originMaterial, selectedBoard, secondSelMaterial);
+                            AfterMoving(firstSelBoard, selectedBoard);
                             selecting = false;
                         }
                     } else
@@ -135,7 +134,7 @@ public class ManipulationManager : MonoBehaviour
                             // 进行单步取消操作
                             catching = true;
                             selectedBoard.GetComponent<Renderer>().material = selectedMaterial;
-                            coroutine = CancelOneStep(selectedBoard, originMaterial);
+                            coroutine = CancelOneStep(selectedBoard);
                             StartCoroutine(coroutine);
                         }
                     }
@@ -144,6 +143,11 @@ public class ManipulationManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 对预览格格子进行数据存储操作
+    /// </summary>
+    /// <param name="nextCouldStep">下一步可走格子</param>
+    /// <param name="showed">是否正在展示下一步</param>
     void DoShowCouldStep(List<int[]> nextCouldStep, bool showed)
     {
         // 未展示下一步，进行存储
@@ -161,6 +165,11 @@ public class ManipulationManager : MonoBehaviour
         isShow = !isShow;
     }
 
+    /// <summary>
+    /// 设置透明色
+    /// </summary>
+    /// <param name="material"></param>
+    /// <param name="renderingMode"></param>
     void SetMaterialRenderingMode(Material material, RenderingMode renderingMode)
     {
         switch (renderingMode)
@@ -208,13 +217,11 @@ public class ManipulationManager : MonoBehaviour
     /// 完成移动后，重置棋盘颜色
     /// </summary>
     /// <param name="firBoard">首次点击的棋盘</param>
-    /// <param name="firMaterial">首次点击棋盘的Material</param>
     /// <param name="secBoard">第二次点击的棋盘</param>
-    /// <param name="secMaterial">第二次点击棋盘的Material</param>
-    void AfterMoving(GameObject firBoard, Material firMaterial, GameObject secBoard, Material secMaterial)
+    void AfterMoving(GameObject firBoard, GameObject secBoard)
     {
-        firBoard.GetComponent<Renderer>().material = firMaterial;
-        secBoard.GetComponent<Renderer>().material = secMaterial;
+        chessBoardManager.ResetBoard(firBoard);
+        chessBoardManager.ResetBoard(secBoard);
         catching = false;
     }
 
@@ -222,37 +229,14 @@ public class ManipulationManager : MonoBehaviour
     /// 首次点击失败，重置棋盘颜色
     /// </summary>
     /// <param name="firBoard">首次点击棋盘</param>
-    /// <param name="firMaterial">首次点击棋盘的Material</param>
     /// <returns></returns>
-    IEnumerator CancelOneStep(GameObject firBoard, Material firMaterial)
+    IEnumerator CancelOneStep(GameObject firBoard)
     {
-        yield return new WaitForSeconds(1.5f);
-        firBoard.GetComponent<Renderer>().material = firMaterial;
+        yield return new WaitForSeconds(0.5f);
+        chessBoardManager.ResetBoard(firBoard);
         catching = false;
     }
 
-    ///// <summary>
-    ///// 显示可以走的格子，显示三秒后消失
-    ///// </summary>
-    ///// <param name="couldBoard"></param>
-    ///// <returns></returns>
-    //IEnumerator ShowCouldStep(GameObject[] couldBoard)
-    //{
-    //    Material[] couldMaterial = new Material[couldBoard.Length];
-    //    for (int i = 0; i < couldBoard.Length; i++)
-    //    {
-    //        couldMaterial[i] = couldBoard[i].GetComponent<Renderer>().material;
-    //        couldBoard[i].GetComponent<Renderer>().material = selectedMaterial;
-    //        Material material = couldBoard[i].GetComponent<Renderer>().material;
-    //        couldBoard[i].GetComponent<Renderer>().material.color = new Color(material.color.r, material.color.g, material.color.b, 0.6f);
-    //        SetMaterialRenderingMode(couldBoard[i].GetComponent<Renderer>().material, RenderingMode.Transparent);
-    //    }
-    //    yield return new WaitForSeconds(2f);
-    //    for (int i = 0; i < couldBoard.Length; i++)
-    //    {
-    //        couldBoard[i].GetComponent<Renderer>().material = couldMaterial[i];
-    //    }
-    //}
 
     /// <summary>
     /// 显示或者恢复可以走的格子
