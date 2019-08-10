@@ -47,6 +47,7 @@ public class ChessBoardManager : MonoBehaviour
     public GameObject[,] ChessPre = new GameObject[2, 16];
 
     private Vector3 prfOffset = new Vector3(0, -0.5f, 0);
+    private Vector3 posOffset = new Vector3(0, 1.5f, 0);
 
     // Start is called before the first frame update3
     void Start()
@@ -127,7 +128,6 @@ public class ChessBoardManager : MonoBehaviour
     /// </summary>
     void InitChess()
     {
-        Vector3 posOffset = new Vector3(0, 1.5f, 0);
         Vector3 rot = new Vector3(0, 180, 0);
         ChessIcon[0, 0] = Instantiate(m_IconWhiteRook, miniBoard[0, 0].GetComponent<Transform>().position + posOffset, Quaternion.Euler(rot)) as GameObject;
         ChessIcon[0, 1] = Instantiate(m_IconWhiteHorse, miniBoard[0, 1].GetComponent<Transform>().position + posOffset, Quaternion.Euler(rot)) as GameObject;
@@ -252,7 +252,7 @@ public class ChessBoardManager : MonoBehaviour
     /// <returns>需要的棋子position</returns>
     public Vector3 GetChessVector(GameObject chessBoard)
     {
-        return chessBoard.GetComponent<Transform>().position + prfOffset;
+        return chessBoard.GetComponent<Transform>().position + prfOffset + posOffset;
     }
 
     // Update is called once per frame
