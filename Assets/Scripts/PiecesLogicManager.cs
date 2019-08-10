@@ -245,7 +245,7 @@ public class PiecesLogicManager : MonoBehaviour
             {
                 if (!ChessExistCheck(chessPos[0], chessPos[1] + 1))
                 {
-                    nextCouldStep.Add(new int[2] { chessPos[0] + 1, chessPos[1] });
+                    nextCouldStep.Add(new int[2] { chessPos[0], chessPos[1] + 1 });
                     nextCouldTimes++;
                 }
             }
