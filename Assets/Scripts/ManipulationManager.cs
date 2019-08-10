@@ -27,6 +27,7 @@ public class ManipulationManager : MonoBehaviour
 
     Material originMaterial;
     Material selectedMaterial;
+    Material killMaterial;
     GameObject selectedBoard;
 
     private IEnumerator coroutine;
@@ -45,6 +46,7 @@ public class ManipulationManager : MonoBehaviour
         piecesLogicManager = gameObject.GetComponent<PiecesLogicManager>();
         m_Transform = gameObject.GetComponent<Transform>();
         selectedMaterial = Resources.Load<Material>("Materials/ChessBoard/Board_Selecting_Standard");
+        killMaterial = Resources.Load<Material>("Materials/ChessBoard/Board_Kill_Standard");
     }
 
     // Update is called once per frame
@@ -124,8 +126,8 @@ public class ManipulationManager : MonoBehaviour
                             selectedBoard = chessBoardManager.miniBoard[selectedPos[0], selectedPos[1]];
                             selectedBoard.GetComponent<Renderer>().material = selectedMaterial;
                             Debug.Log(Flag + "Select Success, Selected Pos=" + selectedPos[0] + ", " + selectedPos[1]);
-                            piecesLogicManager.NextStepGuider(chessClass, selectedPos, out int nextCouldTimes, out List<int[]> nextCouldStep);
-                            if (nextCouldTimes > 0)
+                            piecesLogicManager.NextStepGuider(chessClass, selectedPos, out List<int[]> nextCouldStep);
+                            if (nextCouldStep.Count > 0)
                             {
                                 DoShowCouldStep(nextCouldStep, isShow);
                             }
@@ -141,28 +143,6 @@ public class ManipulationManager : MonoBehaviour
                 }
             }
         }
-    }
-
-    /// <summary>
-    /// 对预览格格子进行数据存储操作
-    /// </summary>
-    /// <param name="nextCouldStep">下一步可走格子</param>
-    /// <param name="showed">是否正在展示下一步</param>
-    void DoShowCouldStep(List<int[]> nextCouldStep, bool showed)
-    {
-        // 未展示下一步，进行存储
-        if (!showed)
-        {
-            storedNextCouldStep = nextCouldStep;
-        }
-        int[][] index = nextCouldStep.ToArray();
-        GameObject[] couldBoard = new GameObject[index.Length];
-        for (int i = 0; i < index.Length; i++)
-        {
-            couldBoard[i] = chessBoardManager.miniBoard[index[i][0], index[i][1]];
-        }
-        ShowCouldStep(couldBoard, showed);
-        isShow = !isShow;
     }
 
     /// <summary>
@@ -237,13 +217,40 @@ public class ManipulationManager : MonoBehaviour
         catching = false;
     }
 
+    /// <summary>
+    /// 对预览格格子进行数据存储操作
+    /// </summary>
+    /// <param name="nextCouldStep">下一步可走格子</param>
+    /// <param name="showed">是否正在展示下一步</param>
+    void DoShowCouldStep(List<int[]> nextCouldStep, bool showed)
+    {
+        List<int> killBoard = new List<int>();
+        // 未展示下一步，进行存储
+        if (!showed)
+        {
+            storedNextCouldStep = nextCouldStep;
+        }
+        int[][] index = nextCouldStep.ToArray();
+        GameObject[] couldBoard = new GameObject[index.Length];
+        for (int i = 0; i < index.Length; i++)
+        {
+            couldBoard[i] = chessBoardManager.miniBoard[index[i][0], index[i][1]];
+            if (index[i][2] == 1)
+            {
+                killBoard.Add(i);
+            }
+        }
+        ShowCouldStep(couldBoard, showed, killBoard);
+        isShow = !isShow;
+    }
 
     /// <summary>
     /// 显示或者恢复可以走的格子
     /// </summary>
     /// <param name="couldBoard">可以走到的格子</param>
     /// <param name="showed">显示or恢复格子</param>
-    void ShowCouldStep(GameObject[] couldBoard, bool showed)
+    /// <param name="killBoard">吃子的格子序号</param>>
+    void ShowCouldStep(GameObject[] couldBoard, bool showed, List<int> killBoard)
     {
         if (!showed)
         {
@@ -251,7 +258,13 @@ public class ManipulationManager : MonoBehaviour
             for (int i = 0; i < couldBoard.Length; i++)
             {
                 couldMaterials[i] = couldBoard[i].GetComponent<Renderer>().material;
-                couldBoard[i].GetComponent<Renderer>().material = selectedMaterial;
+                if (killBoard.Contains(i))
+                {
+                    couldBoard[i].GetComponent<Renderer>().material = killMaterial;
+                }
+                else {
+                    couldBoard[i].GetComponent<Renderer>().material = selectedMaterial;
+                }
                 Material material = couldBoard[i].GetComponent<Renderer>().material;
                 couldBoard[i].GetComponent<Renderer>().material.color = new Color(material.color.r, material.color.g, material.color.b, 0.6f);
                 SetMaterialRenderingMode(couldBoard[i].GetComponent<Renderer>().material, RenderingMode.Transparent);
