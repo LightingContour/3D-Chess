@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -100,9 +101,18 @@ public class ManipulationManager : MonoBehaviour
                             if (isShow)
                             {
                                 DoShowCouldStep(storedNextCouldStep, isShow);
-                                int[] firBoardPos = chessBoardManager.GetBoardPos(firstSelBoard);
-                                int[] secBoardPos = chessBoardManager.GetBoardPos(selectedBoard);
-                                piecesLogicManager.ChessMove(firBoardPos[0], firBoardPos[1], secBoardPos[0], secBoardPos[1]);
+                                int[][] index = storedNextCouldStep.ToArray();
+                                for (int a = 0; a < index.Length; a++)
+                                {
+                                    if (Enumerable.SequenceEqual(index[a], new int[] { i, j, 0 }) || Enumerable.SequenceEqual(index[a], new int[] { i, j, 1 }))
+                                    {
+                                        Debug.Log(Flag + "Move Success");
+                                        int[] firBoardPos = chessBoardManager.GetBoardPos(firstSelBoard);
+                                        int[] secBoardPos = chessBoardManager.GetBoardPos(selectedBoard);
+                                        piecesLogicManager.ChessMove(firBoardPos[0], firBoardPos[1], secBoardPos[0], secBoardPos[1]);
+                                        break;
+                                    }
+                                }
                             }
                             AfterMoving(firstSelBoard, selectedBoard);
                             selecting = false;
