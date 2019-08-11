@@ -33,8 +33,8 @@ public class PiecesLogicManager : MonoBehaviour
     /// <returns>有棋子返回true，无返回false</returns>
     public bool ChessExistCheck(int i, int j, out int chessI, out int chessJ)
     {
-        chessI = 0;
-        chessJ = 0;
+        chessI = 8;
+        chessJ = 8;
         float EPSILON = 0.2f;
         board_Transform = chessBoardManager.miniBoard[i, j].GetComponent<Transform>();
         for (int n = 0; n < 2; n++)
@@ -42,7 +42,7 @@ public class PiecesLogicManager : MonoBehaviour
             for (int m = 0; m < 16; m++)
             {
                 Vector3 position = chessBoardManager.ChessPre[n, m].GetComponent<Transform>().position;
-                if (System.Math.Abs(position.x - board_Transform.position.x) < EPSILON && System.Math.Abs(position.z - board_Transform.position.z) < EPSILON)
+                if (System.Math.Abs(position.x - board_Transform.position.x) < EPSILON && System.Math.Abs(position.z - board_Transform.position.z) < EPSILON && chessBoardManager.ChessPre[n, m].activeInHierarchy == true)
                 {
                     chessI = n;
                     chessJ = m;
@@ -50,7 +50,7 @@ public class PiecesLogicManager : MonoBehaviour
                 }
             }
         }
-        bool flag = (chessI == 0 && chessJ == 0) ? false : true;
+        bool flag = (chessI == 8 && chessJ == 8) ? false : true;
         return flag;
     }
 
@@ -62,8 +62,8 @@ public class PiecesLogicManager : MonoBehaviour
     /// <returns>有棋子返回true，无返回false</returns>
     public bool ChessExistCheck(int i, int j)
     {
-        int chessI = 0;
-        int chessJ = 0;
+        int chessI = 8;
+        int chessJ = 8;
         float EPSILON = 0.2f;
         board_Transform = chessBoardManager.miniBoard[i, j].GetComponent<Transform>();
         for (int n = 0; n < 2; n++)
@@ -71,7 +71,7 @@ public class PiecesLogicManager : MonoBehaviour
             for (int m = 0; m < 16; m++)
             {
                 Vector3 position = chessBoardManager.ChessPre[n, m].GetComponent<Transform>().position;
-                if (System.Math.Abs(position.x - board_Transform.position.x) < EPSILON && System.Math.Abs(position.z - board_Transform.position.z) < EPSILON)
+                if (System.Math.Abs(position.x - board_Transform.position.x) < EPSILON && System.Math.Abs(position.z - board_Transform.position.z) < EPSILON && chessBoardManager.ChessPre[n, m].activeInHierarchy == true)
                 {
                     chessI = n;
                     chessJ = m;
@@ -79,7 +79,7 @@ public class PiecesLogicManager : MonoBehaviour
                 }
             }
         }
-        bool flag = (chessI == 0 && chessJ == 0) ? false : true;
+        bool flag = (chessI == 8 && chessJ == 8) ? false : true;
         return flag;
     }
 
@@ -165,8 +165,14 @@ public class PiecesLogicManager : MonoBehaviour
     /// <param name="j">Board的j</param>
     /// <param name="k">前往的Board的i</param>
     /// <param name="l">前往的Board的j</param>
-    public void ChessMove(int i, int j, int k, int l)
+    /// <param name="kill">是否吃子</param>
+    public void ChessMove(int i, int j, int k, int l, bool kill)
     {
+        if (kill)
+        {
+            ChessExistCheck(k, l, out int chessK, out int chessL);
+            chessBoardManager.ChessPre[chessK, chessL].SetActive(false);
+        }
         ChessExistCheck(i, j, out int chessI, out int chessJ);
         chessBoardManager.ChessPre[chessI, chessJ].GetComponent<Transform>().position = chessBoardManager.GetChessVector(chessBoardManager.miniBoard[k, l]);
     }
@@ -400,7 +406,7 @@ public void NextStepGuider(int[] chessClass, int[] chessPos, out List<int[]> nex
                     }
                 }
             }
-            if (chessPos[0] != 0) // 左
+            if (chessPos[1] != 0) // 左
             {
                 for (int i = 1; chessPos[1] - i >= 0; i++)
                 {
@@ -417,7 +423,7 @@ public void NextStepGuider(int[] chessClass, int[] chessPos, out List<int[]> nex
                     }
                 }
             }
-            if (chessPos[0] != 7) // 右
+            if (chessPos[1] != 7) // 右
             {
                 for (int i = 1; chessPos[1] + i <= 7; i++)
                 {
@@ -435,7 +441,7 @@ public void NextStepGuider(int[] chessClass, int[] chessPos, out List<int[]> nex
                     }
                 }
             }
-            if (chessPos[1] != 0) // 下
+            if (chessPos[0] != 0) // 下
             {
                 for (int i = 1; chessPos[0] - i >= 0; i++)
                 {
@@ -481,7 +487,7 @@ public void NextStepGuider(int[] chessClass, int[] chessPos, out List<int[]> nex
         }
         else if (chessClass[1] == 3) // 车
         {
-            if (chessPos[0] != 0) // 左
+            if (chessPos[1] != 0) // 左
             {
                 for (int i = 1; chessPos[1] - i >= 0; i++)
                 {
@@ -499,7 +505,7 @@ public void NextStepGuider(int[] chessClass, int[] chessPos, out List<int[]> nex
                     }
                 }
             }
-            if (chessPos[0] != 7) // 右
+            if (chessPos[1] != 7) // 右
             {
                 for (int i = 1; chessPos[1] + i <= 7; i++)
                 {
@@ -517,7 +523,7 @@ public void NextStepGuider(int[] chessClass, int[] chessPos, out List<int[]> nex
                     }
                 }
             }
-            if (chessPos[1] != 0) // 下
+            if (chessPos[0] != 0) // 下
             {
                 for (int i = 1; chessPos[0] - i >= 0; i++)
                 {

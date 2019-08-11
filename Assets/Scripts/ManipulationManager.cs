@@ -104,12 +104,20 @@ public class ManipulationManager : MonoBehaviour
                                 int[][] index = storedNextCouldStep.ToArray();
                                 for (int a = 0; a < index.Length; a++)
                                 {
-                                    if (Enumerable.SequenceEqual(index[a], new int[] { i, j, 0 }) || Enumerable.SequenceEqual(index[a], new int[] { i, j, 1 }))
+                                    if (Enumerable.SequenceEqual(index[a], new int[] { i, j, 0 }))
                                     {
                                         Debug.Log(Flag + "Move Success");
                                         int[] firBoardPos = chessBoardManager.GetBoardPos(firstSelBoard);
                                         int[] secBoardPos = chessBoardManager.GetBoardPos(selectedBoard);
-                                        piecesLogicManager.ChessMove(firBoardPos[0], firBoardPos[1], secBoardPos[0], secBoardPos[1]);
+                                        piecesLogicManager.ChessMove(firBoardPos[0], firBoardPos[1], secBoardPos[0], secBoardPos[1], false);
+                                        break;
+                                    }
+                                    if (Enumerable.SequenceEqual(index[a], new int[] { i, j, 1 }))
+                                    {
+                                        Debug.Log(Flag + "Move Success, kill opposite");
+                                        int[] firBoardPos = chessBoardManager.GetBoardPos(firstSelBoard);
+                                        int[] secBoardPos = chessBoardManager.GetBoardPos(selectedBoard);
+                                        piecesLogicManager.ChessMove(firBoardPos[0], firBoardPos[1], secBoardPos[0], secBoardPos[1], true);
                                         break;
                                     }
                                 }
