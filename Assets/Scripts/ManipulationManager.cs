@@ -38,6 +38,7 @@ public class ManipulationManager : MonoBehaviour
     private bool isShow = false; // 是否正在展示下一步，用于显示/恢复可走格子
     private float offset = 40; // 棋盘偏移值
     private int[] selectedPos = new int[2]; // 移动格存储
+    private bool selectedClass = false; // 记录黑白棋子，白棋为false黑棋为true
     private List<int[]> storedNextCouldStep; // 暂存的下一步可走格，用于下棋后重置棋盘颜色
 
     // Start is called before the first frame update
@@ -133,6 +134,16 @@ public class ManipulationManager : MonoBehaviour
                         int chessI = 0;
                         int chessJ = 0;
                         selecting = piecesLogicManager.ChessExistCheck(i, j, out chessI,out chessJ) ? true : false;
+                        if (selecting == true)
+                        {
+                            if ((chessI == 0 && selectedClass == false) || (chessI == 1 && selectedClass == true))
+                            {
+                                selectedClass = !selectedClass;
+                            }
+                            else {
+                                selecting = false;
+                            }
+                        }
                         // Debug.Log(Flag + "get i =" + i + " j = " + j);
                         selectedBoard = chessBoardManager.miniBoard[i, j];
                         originMaterial = selectedBoard.GetComponent<Renderer>().material;
