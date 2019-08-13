@@ -111,6 +111,7 @@ public class ManipulationManager : MonoBehaviour
                                         int[] firBoardPos = chessBoardManager.GetBoardPos(firstSelBoard);
                                         int[] secBoardPos = chessBoardManager.GetBoardPos(selectedBoard);
                                         piecesLogicManager.ChessMove(firBoardPos[0], firBoardPos[1], secBoardPos[0], secBoardPos[1], false);
+                                        selectedClass = !selectedClass;
                                         break;
                                     }
                                     if (Enumerable.SequenceEqual(index[a], new int[] { i, j, 1 }))
@@ -119,6 +120,7 @@ public class ManipulationManager : MonoBehaviour
                                         int[] firBoardPos = chessBoardManager.GetBoardPos(firstSelBoard);
                                         int[] secBoardPos = chessBoardManager.GetBoardPos(selectedBoard);
                                         piecesLogicManager.ChessMove(firBoardPos[0], firBoardPos[1], secBoardPos[0], secBoardPos[1], true);
+                                        selectedClass = !selectedClass;
                                         break;
                                     }
                                 }
@@ -136,11 +138,8 @@ public class ManipulationManager : MonoBehaviour
                         selecting = piecesLogicManager.ChessExistCheck(i, j, out chessI,out chessJ) ? true : false;
                         if (selecting == true)
                         {
-                            if ((chessI == 0 && selectedClass == false) || (chessI == 1 && selectedClass == true))
+                            if (!((chessI == 0 && selectedClass == false) || (chessI == 1 && selectedClass == true)))
                             {
-                                selectedClass = !selectedClass;
-                            }
-                            else {
                                 selecting = false;
                             }
                         }
