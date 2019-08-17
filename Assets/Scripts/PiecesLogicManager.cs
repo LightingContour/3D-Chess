@@ -274,7 +274,7 @@ public void NextStepGuider(int[] chessClass, int[] chessPos, out List<int[]> nex
                     }
                     if (chessPos[1] != 0)
                     {
-                        if (ChessCouldMoveAdd(chessPos[0], chessPos[1], chessClass[0] - 1, out int[] couldStep))
+                        if (ChessCouldMoveAdd(chessPos[0], chessPos[1] - 1, chessClass[0], out int[] couldStep))
                         {
                             nextCouldStep.Add(couldStep);
                         }
