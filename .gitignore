@@ -87,3 +87,7 @@ crashlytics-build.properties
 
 
 # End of https://www.gitignore.io/api/unity,macos
+
+# JetBrains Rider
+.idea/
+Assets/Plugins/Editor/
