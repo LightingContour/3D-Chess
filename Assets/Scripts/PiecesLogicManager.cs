@@ -319,6 +319,34 @@ public void NextStepGuider(int[] chessClass, int[] chessPos, out List<int[]> nex
                     nextCouldStep.Add(couldStep);
                 }
             }
+            if (chessPos[0] - 1 >= 0 && chessPos[1] - 1 >= 0) //左下
+            {
+                if (ChessCouldMoveAdd(chessPos[0] - 1, chessPos[1] -1, chessClass[0], out int[] couldStep))
+                {
+                    nextCouldStep.Add(couldStep);
+                }
+            }
+            if (chessPos[0] - 1 >= 0 && chessPos[1] + 1 <= 7) //右下
+            {
+                if (ChessCouldMoveAdd(chessPos[0] - 1, chessPos[1] + 1, chessClass[0], out int[] couldStep))
+                {
+                    nextCouldStep.Add(couldStep);
+                }
+            }
+            if (chessPos[0] + 1 <= 7 && chessPos[1] - 1 >= 0) //左上
+            {
+                if (ChessCouldMoveAdd(chessPos[0] + 1, chessPos[1] - 1, chessClass[0], out int[] couldStep))
+                {
+                    nextCouldStep.Add(couldStep);
+                }
+            }
+            if (chessPos[0] + 1 <= 7 && chessPos[1] + 1 <= 7) //右上
+            {
+                if (ChessCouldMoveAdd(chessPos[0] + 1, chessPos[1] + 1, chessClass[0], out int[] couldStep))
+                {
+                    nextCouldStep.Add(couldStep);
+                }
+            }
             switch (chessClass[0])
             {
                 case 0:
