@@ -13,6 +13,10 @@ public class PiecesLogicManager : MonoBehaviour
 
     private Transform board_Transform;
 
+    public bool animing; // 是否正在动画
+    private Transform move_Chess; // 需要移动的棋子
+    private Vector3 target_Pos; // 棋子目标位置
+
     private readonly string Flag = "PiecesLogicManager-";
 
     // Start is called before the first frame update
@@ -174,7 +178,9 @@ public class PiecesLogicManager : MonoBehaviour
             chessBoardManager.ChessPre[chessK, chessL].SetActive(false);
         }
         ChessExistCheck(i, j, out int chessI, out int chessJ);
-        chessBoardManager.ChessPre[chessI, chessJ].GetComponent<Transform>().position = chessBoardManager.GetChessVector(chessBoardManager.miniBoard[k, l]);
+        move_Chess = chessBoardManager.ChessPre[chessI, chessJ].GetComponent<Transform>();
+        target_Pos = chessBoardManager.GetChessVector(chessBoardManager.miniBoard[k, l]);
+//        chessBoardManager.ChessPre[chessI, chessJ].GetComponent<Transform>().position = chessBoardManager.GetChessVector(chessBoardManager.miniBoard[k, l]);
     }
 
     /// <summary>
@@ -769,6 +775,18 @@ public void NextStepGuider(int[] chessClass, int[] chessPos, out List<int[]> nex
     // Update is called once per frame
     void Update()
     {
-        
+        if (move_Chess != null && move_Chess.position != target_Pos)
+        {
+            animing = true;
+            if (Mathf.Abs(Vector3.Distance(move_Chess.position, target_Pos)) <= 0.2f)
+            {
+                move_Chess.position = target_Pos;
+            }
+            move_Chess.position = Vector3.Lerp(move_Chess.position, target_Pos, Time.deltaTime * 4);
+        }
+        else
+        {
+            animing = false;
+        }
     }
 }

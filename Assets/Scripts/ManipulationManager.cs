@@ -74,7 +74,7 @@ public class ManipulationManager : MonoBehaviour
                 Vector3 targetPoint;
                 targetPoint = hit.point;
 
-                if(Mathf.Abs(targetPoint.x) <= offset && Mathf.Abs(targetPoint.z) <= offset && catching == false)
+                if(Mathf.Abs(targetPoint.x) <= offset && Mathf.Abs(targetPoint.z) <= offset && catching == false && piecesLogicManager.animing == false)
                 {
                     if (selecting)
                     {
