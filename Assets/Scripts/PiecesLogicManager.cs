@@ -27,6 +27,43 @@ public class PiecesLogicManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 判断兵是否已经走过
+    /// </summary>
+    /// <param name="i">选中棋盘的i，第几排</param>
+    /// <param name="j">选中棋盘的j，第几列</param>
+    /// <param name="chessClass0">棋子的黑白属性，0为白、1为黑</param>
+    /// <param name="chessClass1">棋子的类型，0->兵;1->王;2->后;3->车;4->象;5->马；参考ChessClassCheck</param>
+    /// <returns></returns>
+    public bool PawnMovedCheck(int i, int j, int chessClass0, int chessClass1)
+    {
+        if (chessClass0 == 0 || chessClass0 == 1)
+        {
+            if (chessClass1 == 0)
+            {
+                if (j >= 0 && j<= 7)
+                {
+                    switch (chessClass0)
+                    {
+                        case 0:
+                            if (i == 1)
+                            {
+                                return false;
+                            }
+                            break;
+                        case 1:
+                            if (i == 6)
+                            {
+                                return false;
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    /// <summary>
     /// 检测选中的棋盘格中是否存在棋子
     /// 存在的话返回棋子ij
     /// </summary>
@@ -246,7 +283,30 @@ public void NextStepGuider(int[] chessClass, int[] chessPos, out List<int[]> nex
             switch (chessClass[0])
             {
                 case 0:
-                    // 默认情况可走前、左、右
+                    if (PawnMovedCheck(chessPos[0], chessPos[1], chessClass[0], chessClass[1]))
+                    {
+                        if (chessPos[1] != 0)
+                        {
+                            if (ChessCouldMoveAdd(chessPos[0], chessPos[1] - 1, chessClass[0], out int[] couldStep))
+                            {
+                                nextCouldStep.Add(couldStep);
+                            }
+                        }
+                        if (chessPos[1] != 7)
+                        {
+                            if (ChessCouldMoveAdd(chessPos[0], chessPos[1] + 1, chessClass[0], out int[] couldStep))
+                            {
+                                nextCouldStep.Add(couldStep);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (ChessCouldMoveAdd(chessPos[0] + 2, chessPos[1], chessClass[0], out int[] couldStep))
+                        {
+                            nextCouldStep.Add(couldStep);
+                        }
+                    }
                     if (chessPos[0] != 7)
                     {
                         if (ChessCouldMoveAdd(chessPos[0] + 1, chessPos[1], chessClass[0], out int[] couldStep))
@@ -254,40 +314,35 @@ public void NextStepGuider(int[] chessClass, int[] chessPos, out List<int[]> nex
                             nextCouldStep.Add(couldStep);
                         }
                     }
-                    if (chessPos[1] != 0)
-                    {
-                        if (ChessCouldMoveAdd(chessPos[0], chessPos[1] - 1, chessClass[0], out int[] couldStep))
-                        {
-                            nextCouldStep.Add(couldStep);
-                        }
-                    }
-                    if (chessPos[1] != 7)
-                    {
-                        if (ChessCouldMoveAdd(chessPos[0], chessPos[1] + 1, chessClass[0], out int[] couldStep))
-                        {
-                            nextCouldStep.Add(couldStep);
-                        }
-                    }
                     break;
                 case 1:
-                    // 默认可走后、左、右
+                    if (PawnMovedCheck(chessPos[0], chessPos[1], chessClass[0], chessClass[1]))
+                    {
+                        if (chessPos[1] != 0)
+                        {
+                            if (ChessCouldMoveAdd(chessPos[0], chessPos[1] - 1, chessClass[0], out int[] couldStep))
+                            {
+                                nextCouldStep.Add(couldStep);
+                            }
+                        }
+                        if (chessPos[1] != 7)
+                        {
+                            if (ChessCouldMoveAdd(chessPos[0], chessPos[1] + 1, chessClass[0], out int[] couldStep))
+                            {
+                                nextCouldStep.Add(couldStep);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (ChessCouldMoveAdd(chessPos[0] - 2, chessPos[1], chessClass[0], out int[] couldStep))
+                        {
+                            nextCouldStep.Add(couldStep);
+                        }
+                    }
                     if (chessPos[0] != 0)
                     {
                         if (ChessCouldMoveAdd(chessPos[0] - 1, chessPos[1], chessClass[0], out int[] couldStep))
-                        {
-                            nextCouldStep.Add(couldStep);
-                        }
-                    }
-                    if (chessPos[1] != 0)
-                    {
-                        if (ChessCouldMoveAdd(chessPos[0], chessPos[1] - 1, chessClass[0], out int[] couldStep))
-                        {
-                            nextCouldStep.Add(couldStep);
-                        }
-                    }
-                    if (chessPos[1] != 7)
-                    {
-                        if (ChessCouldMoveAdd(chessPos[0], chessPos[1] + 1, chessClass[0], out int[] couldStep))
                         {
                             nextCouldStep.Add(couldStep);
                         }
