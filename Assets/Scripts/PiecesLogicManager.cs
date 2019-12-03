@@ -179,7 +179,15 @@ public class PiecesLogicManager : MonoBehaviour
         }
         return flag;
     }
-
+    
+    /// <summary>
+    /// 判断是否增加棋子可移动区域
+    /// </summary>
+    /// <param name="i">chessI，参考ChessBoardManager的ChessPre</param>
+    /// <param name="j">chessJ，参考ChessBoardManager的ChessPre</param>
+    /// <param name="chessClass0">棋子的黑白属性，0为白、1为黑</param>
+    /// <param name="couldStep">返回棋子之后可走的位置、是否为吃子</param>
+    /// <returns></returns>
     public bool ChessCouldMoveAdd(int i, int j, int chessClass0, out int[] couldStep)
     {
         bool flag = false;
@@ -192,6 +200,35 @@ public class PiecesLogicManager : MonoBehaviour
                 flag = true;
             }
             else {
+                couldStep = new int[3] { i, j, 1 };
+                flag = true;
+            }
+        }
+        return flag;
+    }
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="i">chessI，参考ChessBoardManager的ChessPre</param>
+    /// <param name="j">chessJ，参考ChessBoardManager的ChessPre</param>
+    /// <param name="chessClass0">棋子的黑白属性，0为白、1为黑</param>
+    /// <param name="isPawnMove">false为棋子普通移动；true为棋子斜吃子</param>
+    /// <param name="couldStep">返回棋子之后可走的位置、是否为吃子</param>
+    /// <returns></returns>
+    public bool ChessCouldMoveAdd(int i, int j, int chessClass0, bool isPawnMove,out int[] couldStep)
+    {
+        bool flag = false;
+        couldStep = null;
+        if (ChessCouldMoveCheck(i, j, chessClass0, out bool eat))
+        {
+            if (isPawnMove && !eat)
+            {
+                couldStep = new int[3] { i, j, 0 };
+                flag = true;
+            }
+            else if (!isPawnMove && eat)
+            {
                 couldStep = new int[3] { i, j, 1 };
                 flag = true;
             }
@@ -283,69 +320,43 @@ public void NextStepGuider(int[] chessClass, int[] chessPos, out List<int[]> nex
             switch (chessClass[0])
             {
                 case 0:
-                    if (PawnMovedCheck(chessPos[0], chessPos[1], chessClass[0], chessClass[1]))
-                    {
-                        if (chessPos[1] != 0)
-                        {
-                            if (ChessCouldMoveAdd(chessPos[0], chessPos[1] - 1, chessClass[0], out int[] couldStep))
-                            {
-                                nextCouldStep.Add(couldStep);
-                            }
-                        }
-                        if (chessPos[1] != 7)
-                        {
-                            if (ChessCouldMoveAdd(chessPos[0], chessPos[1] + 1, chessClass[0], out int[] couldStep))
-                            {
-                                nextCouldStep.Add(couldStep);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (ChessCouldMoveAdd(chessPos[0] + 2, chessPos[1], chessClass[0], out int[] couldStep))
-                        {
+                    // 兵未移动时，能前进两格
+                    if (!PawnMovedCheck(chessPos[0], chessPos[1], chessClass[0], chessClass[1]))
+                        if (ChessCouldMoveAdd(chessPos[0] + 2, chessPos[1], chessClass[0], true, out var couldStep))
                             nextCouldStep.Add(couldStep);
-                        }
-                    }
+                    // 兵正常可前进移动
                     if (chessPos[0] != 7)
-                    {
-                        if (ChessCouldMoveAdd(chessPos[0] + 1, chessPos[1], chessClass[0], out int[] couldStep))
-                        {
+                        if (ChessCouldMoveAdd(chessPos[0] + 1, chessPos[1], chessClass[0], true, out var couldStep))
                             nextCouldStep.Add(couldStep);
-                        }
+                    // 兵的斜吃子
+                    if (chessPos[0] < 7)
+                    {
+                        if (chessPos[1] > 0 && ChessCouldMoveAdd(chessPos[0] + 1, chessPos[1] - 1, chessClass[0], false,
+                                out var couldStep1))
+                            nextCouldStep.Add(couldStep1);
+                        if (chessPos[1] < 7 && ChessCouldMoveAdd(chessPos[0] + 1, chessPos[1] + 1, chessClass[0], false,
+                                out var couldStep2))
+                            nextCouldStep.Add(couldStep2);
                     }
                     break;
                 case 1:
-                    if (PawnMovedCheck(chessPos[0], chessPos[1], chessClass[0], chessClass[1]))
-                    {
-                        if (chessPos[1] != 0)
-                        {
-                            if (ChessCouldMoveAdd(chessPos[0], chessPos[1] - 1, chessClass[0], out int[] couldStep))
-                            {
-                                nextCouldStep.Add(couldStep);
-                            }
-                        }
-                        if (chessPos[1] != 7)
-                        {
-                            if (ChessCouldMoveAdd(chessPos[0], chessPos[1] + 1, chessClass[0], out int[] couldStep))
-                            {
-                                nextCouldStep.Add(couldStep);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (ChessCouldMoveAdd(chessPos[0] - 2, chessPos[1], chessClass[0], out int[] couldStep))
-                        {
+                    // 兵未移动时，能前进两格
+                    if (!PawnMovedCheck(chessPos[0], chessPos[1], chessClass[0], chessClass[1]))
+                        if (ChessCouldMoveAdd(chessPos[0] - 2, chessPos[1], chessClass[0], true, out var couldStep))
                             nextCouldStep.Add(couldStep);
-                        }
-                    }
+                    // 兵正常可前进移动
                     if (chessPos[0] != 0)
-                    {
-                        if (ChessCouldMoveAdd(chessPos[0] - 1, chessPos[1], chessClass[0], out int[] couldStep))
-                        {
+                        if (ChessCouldMoveAdd(chessPos[0] - 1, chessPos[1], chessClass[0], true,out var couldStep))
                             nextCouldStep.Add(couldStep);
-                        }
+                    // 兵的斜吃子
+                    if (chessPos[0] > 0)
+                    {
+                        if (chessPos[1] > 0 && ChessCouldMoveAdd(chessPos[0] - 1, chessPos[1] - 1, chessClass[0], false,
+                                out int[] couldStep1))
+                            nextCouldStep.Add(couldStep1);
+                        if (chessPos[1] < 7 && ChessCouldMoveAdd(chessPos[0] - 1, chessPos[1] + 1, chessClass[0], false,
+                                out int[] couldStep2))
+                            nextCouldStep.Add(couldStep2);
                     }
                     break;
             }
