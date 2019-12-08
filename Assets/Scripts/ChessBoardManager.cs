@@ -255,9 +255,23 @@ public class ChessBoardManager : MonoBehaviour
         return chessBoard.GetComponent<Transform>().position + prfOffset + posOffset;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SwitchIcon(bool isBlack)
     {
-        
+        if (!isBlack)
+        {
+            Vector3 whiteRot = new Vector3(0, 180, 0);
+            foreach (var icon in ChessIcon)
+            {
+                icon.GetComponent<Transform>().rotation = Quaternion.Euler(whiteRot);
+            }
+        }
+        else
+        {
+            Vector3 blackRot = new Vector3(0, 0, 0);
+            foreach (var icon in ChessIcon)
+            {
+                icon.GetComponent<Transform>().rotation = Quaternion.Euler(blackRot);
+            }
+        }
     }
 }

@@ -22,6 +22,7 @@ public class ManipulationManager : MonoBehaviour
 {
     private ChessBoardManager chessBoardManager;
     private PiecesLogicManager piecesLogicManager;
+    private CameraManager cameraManager;
 
     private Transform m_Transform;
     private readonly string Flag = "ManipulationManager-";
@@ -46,6 +47,7 @@ public class ManipulationManager : MonoBehaviour
     {
         chessBoardManager = GameObject.Find("BoardPlane").GetComponent<ChessBoardManager>();
         piecesLogicManager = gameObject.GetComponent<PiecesLogicManager>();
+        cameraManager = GameObject.Find("Main Camera").GetComponent<CameraManager>();
         m_Transform = gameObject.GetComponent<Transform>();
         selectedMaterial = Resources.Load<Material>("Materials/ChessBoard/Board_Selecting_Standard");
         killMaterial = Resources.Load<Material>("Materials/ChessBoard/Board_Kill_Standard");
@@ -112,6 +114,7 @@ public class ManipulationManager : MonoBehaviour
                                         int[] secBoardPos = chessBoardManager.GetBoardPos(selectedBoard);
                                         piecesLogicManager.ChessMove(firBoardPos[0], firBoardPos[1], secBoardPos[0], secBoardPos[1], false);
                                         selectedClass = !selectedClass;
+                                        cameraManager.SwitchPos(selectedClass);
                                         break;
                                     }
                                     if (Enumerable.SequenceEqual(index[a], new int[] { i, j, 1 }))
@@ -121,6 +124,7 @@ public class ManipulationManager : MonoBehaviour
                                         int[] secBoardPos = chessBoardManager.GetBoardPos(selectedBoard);
                                         piecesLogicManager.ChessMove(firBoardPos[0], firBoardPos[1], secBoardPos[0], secBoardPos[1], true);
                                         selectedClass = !selectedClass;
+                                        cameraManager.SwitchPos(selectedClass);
                                         break;
                                     }
                                 }
