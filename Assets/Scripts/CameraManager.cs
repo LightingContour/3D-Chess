@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
-    private float rotSpeed = 130;
+    private float rotSpeed = 170;
     private bool setFront = true;
     private bool changing = false;
     private ChessBoardManager chessBoardManager;
